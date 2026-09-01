@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reverse Attack-Path Visualization</title>
+<link rel="stylesheet" href="css/style.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Reverse Attack-Path Visualization</h1>
+    <div class="topbar-controls">
+      <label>Layout
+        <select id="layout-select">
+          <option value="force">Force-directed</option>
+          <option value="hierarchical">Stage-hierarchical</option>
+        </select>
+      </label>
+      <label>3D theme
+        <select id="theme-select">
+          <option value="standard">Standard</option>
+          <option value="neural">Neural</option>
+          <option value="organic">Organic</option>
+        </select>
+      </label>
+      <label>Branches
+        <input type="number" id="branches-input" value="2" min="0" max="6" style="width:3.5em" />
+      </label>
+      <button id="regenerate-btn">↻ Regenerate incident</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="views">
+      <div class="view-pane">
+        <h2>2D — analytical baseline</h2>
+        <div id="view-2d" class="view-surface"></div>
+      </div>
+      <div class="view-pane">
+        <h2>3D — X: zone · Y: stage · Z: time</h2>
+        <div id="view-3d" class="view-surface"></div>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <div class="panel">
+        <h3>Reverse traversal</h3>
+        <p class="muted">Select a compromised/impacted node, then run traversal.</p>
+        <label>k candidate paths
+          <input type="number" id="k-input" value="3" min="1" max="8" style="width:3.5em" />
+        </label>
+        <button id="run-traversal-btn">Run reverse traversal</button>
+        <div id="path-list" class="path-list"></div>
+      </div>
+
+      <div class="panel" id="detail-panel-wrap">
+        <h3>Investigator detail</h3>
+        <div id="detail-panel"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Filters</h3>
+        <div id="filters-panel"></div>
+        <button id="clear-filters-btn">Clear filters</button>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="timeline-bar">
+    <button id="play-btn">▶ Replay</button>
+    <input type="range" id="timeline-range" min="0" max="1" step="1" />
+    <span id="timeline-label"></span>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
