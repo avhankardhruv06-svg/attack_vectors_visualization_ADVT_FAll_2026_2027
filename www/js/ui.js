@@ -50,6 +50,7 @@ export function initUI({ render3d }) {
       <h3>${escapeHtml(node.type.toUpperCase())}: ${escapeHtml(node.label || node.id)}</h3>
       <dl>
         <dt>Status</dt><dd class="state-${slug(node.state)}">${node.state}</dd>
+        <dt>Description</dt><dd>${escapeHtml(node.description || "—")}</dd>
         <dt>Zone</dt><dd>${escapeHtml(node.zone || "—")}</dd>
         <dt>Last event</dt><dd>${lastEvent ? formatTime(lastEvent.timestamp) : "—"}</dd>
         <dt>Connected systems</dt><dd>${connectedSystems.size}</dd>

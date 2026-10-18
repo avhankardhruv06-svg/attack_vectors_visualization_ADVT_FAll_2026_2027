@@ -65,14 +65,40 @@ class GraphStore extends EventTarget {
 
   // ---- Loading -----------------------------------------------------
 
-  loadGraph({ nodes, edges }) {
-    this.nodes = new Map(nodes.map((n) => [n.id, n]));
-    this.edges = edges.map((e, i) => ({ id: e.id ?? `e${i}`, ...e }));
+  loadGraph(payload) {
+    try {
+      let raw = payload;
+      if (typeof raw === "string") {
+        try { raw = JSON.parse(raw); } catch (err) {}
+      }
+      if (Array.isArray(raw) && raw.length > 0) {
+        raw = raw[0];
+      }
 
-    const ts = this.edges.map((e) => e.timestamp);
-    this.timeRange = [Math.min(...ts), Math.max(...ts)];
-    this.timelineCursor = this.timeRange[1];
+      let nodesArr = raw?.nodes;
+      let edgesArr = raw?.edges;
 
+      if (nodesArr && !Array.isArray(nodesArr)) {
+        if (Array.isArray(nodesArr.nodes)) nodesArr = nodesArr.nodes;
+      }
+      if (edgesArr && !Array.isArray(edgesArr)) {
+        if (Array.isArray(edgesArr.edges)) edgesArr = edgesArr.edges;
+      }
+
+      const rawNodes = Array.isArray(nodesArr) ? nodesArr : (Array.isArray(raw) ? raw : []);
+      const rawEdges = Array.isArray(edgesArr) ? edgesArr : [];
+
+      this.nodes = new Map(rawNodes.map((n) => [n.id || `node-${Math.random()}`, n]));
+      this.edges = rawEdges.map((e, i) => ({ id: e.id ?? `e${i}`, confidence: e.confidence ?? 0.8, ...e }));
+
+      const ts = this.edges.map((e) => Number(e.timestamp) || 0);
+      const minT = ts.length ? Math.min(...ts) : 0;
+      const maxT = ts.length ? Math.max(...ts) : 100;
+      this.timeRange = [minT, maxT];
+      this.timelineCursor = maxT;
+    } catch (err) {
+      console.error("Error in loadGraph:", err);
+    }
     this._emit("graph-loaded");
   }
 
@@ -100,13 +126,12 @@ class GraphStore extends EventTarget {
       return true;
     });
 
-    const visibleNodeIds = new Set();
-    edges.forEach((e) => {
-      visibleNodeIds.add(e.source);
-      visibleNodeIds.add(e.target);
+    const nodes = [...this.nodes.values()].filter((n) => {
+      if (f.host && n.type === "host" && n.id !== f.host) return false;
+      if (f.user && n.type === "user" && n.id !== f.user) return false;
+      if (f.process && n.type === "process" && n.id !== f.process) return false;
+      return true;
     });
-
-    const nodes = [...this.nodes.values()].filter((n) => visibleNodeIds.has(n.id));
 
     return { nodes, edges };
   }
@@ -121,6 +146,7 @@ class GraphStore extends EventTarget {
 
   clearSelection() {
     this.selectedNodeId = null;
+    this.focusNodeId = null;
     this._emit("selection-changed", { nodeId: null });
   }
 

@@ -1,0 +1,178 @@
+ATTACK PATH VIZ - TECH STACK
+
+1. R
+   What it is: A programming language used for data work and web applications.
+   Where it is used:
+   - app.R: Main application file.
+   - generate_data.R: Creates sample attack scenarios.
+   Why it is used:
+   - It runs the Shiny application.
+   - It loads scenario data and prepares the tables shown in the app.
+   - It is useful for handling structured data and analysis.
+
+2. Shiny for R
+   What it is: A framework for building interactive web applications with R.
+   Where it is used:
+   - app.R: Creates the page, sidebar, buttons, selectors, sliders, and tables.
+   - app.R: Sends messages between the R code and browser JavaScript.
+   Why it is used:
+   - It provides the main application UI.
+   - It connects user actions, such as selecting a scenario or pressing Play, to the application logic.
+   - It lets R and JavaScript work together.
+
+3. bslib and Bootstrap 5
+   What it is: A UI styling system based on Bootstrap 5.
+   Where it is used:
+   - app.R: Uses page_navbar(), sidebar(), card(), layout_columns(), and bs_theme().
+   Why it is used:
+   - It gives the application a responsive layout.
+   - It provides ready-made navigation bars, sidebars, cards, buttons, and spacing.
+   - It helps the page work on different screen sizes.
+
+4. jsonlite
+   What it is: An R package for reading and writing JSON data.
+   Where it is used:
+   - app.R: Reads scenario JSON files with fromJSON() and sends data to JavaScript with toJSON().
+   - generate_data.R: Writes generated scenarios as JSON files.
+   Why it is used:
+   - The attack graph data is stored in JSON format.
+   - JSON makes it easy to pass nodes and edges between R and browser JavaScript.
+
+5. DT (DataTables for R)
+   What it is: A package for showing interactive data tables.
+   Where it is used:
+   - app.R: Creates the Device / Node List with renderDT() and datatable().
+   - app.R: Creates the Process / Activity List with renderDT() and datatable().
+   Why it is used:
+   - It displays nodes and attack events in searchable, paginated tables.
+   - It makes large lists easier to inspect.
+
+6. JavaScript (modern ES modules)
+   What it is: The browser programming language used for interactive behavior and visualization.
+   Where it is used:
+   - www/js/app.js: Starts the visualizers and connects them to Shiny.
+   - www/js/graphStore.js: Stores the shared graph, filters, selection, and timeline state.
+   - www/js/simulator.js: Creates a sample ransomware attack chain.
+   - www/js/traversal.js: Finds likely reverse attack paths.
+   - www/js/layout2d.js: Calculates positions for nodes in 2D layouts.
+   - www/js/render2d.js: Draws the 2D graph.
+   - www/js/render3d.js: Draws the 3D graph.
+   - www/js/ui.js: Contains investigator panel and filter logic.
+   Why it is used:
+   - It makes the graph interactive in the browser.
+   - It updates the visualizations immediately when the timeline, layout, or selection changes.
+   - ES modules keep the code split into focused files instead of one large script.
+
+7. Three.js
+   What it is: A JavaScript library for creating 3D graphics in the browser.
+   Where it is used:
+   - www/js/render3d.js: Creates the 3D scene, camera, lights, nodes, edges, labels, and controls.
+   - app.R: Loads Three.js using an import map from the unpkg CDN.
+   Why it is used:
+   - It provides the 3D attack environment.
+   - It supports WebGL rendering, 3D shapes, camera movement, and mouse interaction.
+   - It represents zone, attack stage, and time as 3D axes.
+
+8. Three.js OrbitControls
+   What it is: A Three.js helper for moving around a 3D scene.
+   Where it is used:
+   - www/js/render3d.js: Imports OrbitControls from three/addons/controls/OrbitControls.js.
+   Why it is used:
+   - It lets the user rotate, zoom, and pan around the 3D attack graph.
+
+9. SVG (Scalable Vector Graphics)
+   What it is: A browser format for drawing shapes and lines using HTML-like elements.
+   Where it is used:
+   - www/js/render2d.js: Draws nodes, edges, labels, highlights, and pulses.
+   Why it is used:
+   - It keeps the 2D graph sharp at different sizes.
+   - Individual nodes and edges can be selected, styled, and updated easily.
+
+10. WebGL
+    What it is: A browser technology for displaying hardware-accelerated graphics.
+    Where it is used:
+    - Three.js uses WebGL internally in www/js/render3d.js through WebGLRenderer.
+    Why it is used:
+    - It makes the 3D view render smoothly in the browser.
+    - It can display many 3D objects efficiently using InstancedMesh.
+
+11. HTML
+    What it is: The structure of a web page.
+    Where it is used:
+    - app.R: Shiny creates the page structure and controls.
+    - www/js/render2d.js and www/js/render3d.js: Create visual elements in the browser.
+    Why it is used:
+    - It provides containers such as view-2d and view-3d.
+    - It gives the application a place to show controls, graphs, labels, and tables.
+
+12. CSS
+    What it is: The language used to style the web page.
+    Where it is used:
+    - www/css/style.css: Defines colors, spacing, panels, sidebar layout, text, inputs, and graph-related styles.
+    - app.R: Loads this stylesheet for the Shiny page.
+    Why it is used:
+    - It controls the visual appearance of the application.
+    - It makes the two visualization areas and investigator controls readable and organized.
+
+13. JSON data files
+    What they are: Text files that store structured attack scenarios.
+    Where they are used:
+    - data/scenarios/scenario_01.json through scenario_10.json.
+    - app.R: Loads these files when the app starts.
+    - app.R and www/js/app.js: Pass selected scenario data to the visualizations.
+    Why they are used:
+    - Each scenario stores nodes and edges in a simple, portable format.
+    - New scenarios can be added without changing the visualization code.
+
+14. CSV data files
+    What they are: Comma-separated files for tabular graph data.
+    Where they are used:
+    - data/attack_graph_nodes.csv: Stores node information.
+    - data/attack_graph_edges.csv: Stores edge and event information.
+    - data/generate_dataset.mjs: Generates these files.
+    Why they are used:
+    - CSV is easy to open in spreadsheet and data-analysis tools.
+    - It provides a simple export of the attack graph.
+
+15. Node.js and Node.js built-in modules
+    What it is: A JavaScript runtime used for running JavaScript outside the browser.
+    Where it is used:
+    - generate_data.js: Uses fs and path to generate scenario JSON files.
+    - data/generate_dataset.mjs: Uses node:fs to generate CSV files.
+    Why it is used:
+    - It runs data-generation scripts from the command line.
+    - The fs module creates folders and writes generated data files.
+
+16. Native ES modules and CDN import map
+    What it is: A browser feature for importing JavaScript files and external libraries without a build tool.
+    Where it is used:
+    - www/js/*.js: Files import each other with import statements.
+    - app.R: Defines the Three.js import map and loads www/js/app.js as a module.
+    Why it is used:
+    - The project can run without a bundler or build step.
+    - Code stays separated into small modules.
+    - Three.js can be loaded from the unpkg CDN.
+
+17. Graph algorithms
+    What they are: Algorithms for understanding connections and finding paths in the attack graph.
+    Where they are used:
+    - www/js/traversal.js: Uses reverse Dijkstra traversal and Yen's top-k path algorithm.
+    - www/js/layout2d.js: Uses a Barnes-Hut quadtree approximation for force-directed layout and stage/zone layouts.
+    Why they are used:
+    - They help find likely attack paths leading to an impacted asset.
+    - They arrange nodes so relationships and attack stages are easier to understand.
+
+18. R and JavaScript integration through Shiny messages
+    What it is: Communication between the R server and browser code.
+    Where it is used:
+    - app.R: Sends load_scenario_json, sim_control, sim_speed, and set_layout_2d messages.
+    - www/js/app.js: Receives those messages and updates the graph.
+    - www/js/app.js: Sends active nodes and edges back to R.
+    Why it is used:
+    - R manages the application controls and data loading.
+    - JavaScript manages fast visual updates and interaction.
+    - Both sides use the same attack graph information.
+
+SHORT SUMMARY
+
+The project uses R Shiny as the main application framework. R loads and manages scenarios, while JavaScript creates the interactive visual experience. SVG is used for the 2D graph, Three.js/WebGL is used for the 3D graph, CSS controls the look, and JSON/CSV files store or export attack graph data. Node.js scripts are used only to generate sample data.

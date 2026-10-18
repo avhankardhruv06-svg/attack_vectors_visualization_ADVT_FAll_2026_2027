@@ -1,0 +1,95 @@
+{
+  "name": "Supply Chain Compromise",
+  "nodes": [
+    {
+      "id": "attacker-0",
+      "type": "attacker",
+      "zone": "Internet",
+      "label": "Attacker Supply Chain Compromise",
+      "state": "Normal",
+      "description": "External threat actor ( Attacker Supply Chain Compromise ) initiating malicious infiltration from the Internet zone."
+    },
+    {
+      "id": "network_endpoint-1",
+      "type": "network_endpoint",
+      "zone": "DMZ",
+      "label": "Gateway",
+      "state": "Normal",
+      "description": "Perimeter gateway ( Gateway ) in DMZ targeted for initial exploitation and network entry."
+    },
+    {
+      "id": "credential-2",
+      "type": "credential",
+      "zone": "Corp-LAN",
+      "label": "Stolen Hash",
+      "state": "Normal",
+      "description": "Harvested authentication artifact ( Stolen Hash ) extracted to bypass security boundaries."
+    },
+    {
+      "id": "host-3",
+      "type": "host",
+      "zone": "Server-VLAN",
+      "label": "Critical Server",
+      "state": "Impacted",
+      "description": "Target endpoint ( Critical Server ) compromised to execute unauthorized payloads and pivot laterally."
+    },
+    {
+      "id": "attacker-4",
+      "type": "attacker",
+      "zone": "Internet",
+      "label": "Suspicious 1",
+      "state": "Normal",
+      "description": "External threat actor ( Suspicious 1 ) initiating malicious infiltration from the Internet zone."
+    },
+    {
+      "id": "network_endpoint-5",
+      "type": "network_endpoint",
+      "zone": "DMZ",
+      "label": "FW-0 1",
+      "state": "Normal",
+      "description": "Perimeter gateway ( FW-0 1 ) in DMZ targeted for initial exploitation and network entry."
+    }
+  ],
+  "edges": [
+    {
+      "source": "attacker-0",
+      "target": "network_endpoint-1",
+      "type": "phishing",
+      "stage": "Initial Access",
+      "timestamp": 202,
+      "confidence": 0.7
+    },
+    {
+      "source": "network_endpoint-1",
+      "target": "credential-2",
+      "type": "credential-dump",
+      "stage": "Credential Theft",
+      "timestamp": 310,
+      "confidence": 0.9
+    },
+    {
+      "source": "credential-2",
+      "target": "host-3",
+      "type": "smb-logon",
+      "stage": "Lateral Movement",
+      "timestamp": 373,
+      "confidence": 0.85
+    },
+    {
+      "source": "attacker-4",
+      "target": "network_endpoint-5",
+      "type": "port-scan",
+      "stage": "Initial Access",
+      "timestamp": 564,
+      "confidence": 0.4
+    },
+    {
+      "source": "network_endpoint-5",
+      "target": "credential-2",
+      "type": "credential-spray",
+      "stage": "Credential Theft",
+      "timestamp": 591,
+      "confidence": 0.3
+    }
+  ]
+}

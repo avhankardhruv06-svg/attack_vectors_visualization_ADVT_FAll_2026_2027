@@ -38,9 +38,24 @@ export function simulateRansomwareIncident({ branches = 2 } = {}) {
     return (prefix) => `${prefix}-${n++}`;
   })();
 
+  function defaultNodeDescription(type, label) {
+    const base = {
+      attacker: "External threat actor attempting unsolicited access.",
+      network_endpoint: "Internet-facing gateway exposed to phishing and remote access attempts.",
+      host: "Endpoint system that may host user activity or malware execution.",
+      user: "User identity or account involved in credential use and access.",
+      credential: "Recovered credential material used for lateral movement or privilege escalation.",
+      process: "Execution context or malicious process running on a system.",
+      file: "Data asset or file share relevant to storage, encryption, or impact.",
+    };
+    return base[type] || `${label} is part of the incident chain.`;
+  }
+
   const addNode = (type, zone, label, extra = {}) => {
     const id = nodeId(type);
-    nodes.push({ id, type, zone, label, state: "Normal", ...extra });
+    const node = { id, type, zone, label, state: "Normal", ...extra };
+    node.description ??= defaultNodeDescription(type, label);
+    nodes.push(node);
     return id;
   };
 
